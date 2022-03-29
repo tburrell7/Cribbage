@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-func connectToMongo() {
+func connectToMongo() *mongo.Client {
 	// Set client options
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
@@ -29,6 +29,7 @@ func connectToMongo() {
 	}
 
 	fmt.Println("Connected to MongoDB!")
+	return client
 	// collection := client.Database("profile").Collection("people")
 
 	// tom := models.Person{Name:"Tom", Age:21}
@@ -60,6 +61,6 @@ func connectToMongo() {
 	// fmt.Println("Connection to MongoDB closed.")
 }
 func main() {
-	connectToMongo()
-	app.Run()
+	client := connectToMongo()
+	app.Run(client)
 }
