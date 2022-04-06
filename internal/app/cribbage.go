@@ -2,21 +2,33 @@ package app
 
 import (
 	"fmt"
-	"gotest/internal/models"
+	"gotest/internal/app/routers"
+	//"gotest/internal/models"
+	"log"
+	"net/http"
+
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func Run(client *mongo.Client) {
-	fmt.Println("Let's Play!")
-	leftTest := models.NewPlayer("Thomas")
-	rightTest := models.NewPlayer("Josh")
-	models.PrintGames(client)
-	id := models.NewGame(client, leftTest, rightTest)
-	models.PrintGames(client)
-	models.RemoveGame(client, id)
-	models.PrintGames(client)
-	// gameTest.UpdateScore(60, 20)
-	// gameTest.PrintStats()
-	// gameTest.UpdateScore(121, 110)
-	// gameTest.PrintStats()
+	http.HandleFunc("/games", routers.GameRouter)
+	http.HandleFunc("/players", routers.PlayerRouter)
+
+	fmt.Printf("Starting server at port 3000\n")
+    if err := http.ListenAndServe(":3000", nil); err != nil {
+        log.Fatal(err)
+    }
+
+	// fmt.Println("Let's Play!")
+	// leftTest := models.NewPlayer("Thomas")
+	// rightTest := models.NewPlayer("Josh")
+	// models.PrintGames(client)
+	// id := models.NewGame(client, leftTest, rightTest)
+	// models.PrintGames(client)
+	// models.UpdateScore(client, id, 60, 20)
+	// models.PrintGames(client)
+	// models.UpdateScore(client, id, 121, 110)
+	// models.PrintGames(client)
+	// models.RemoveGame(client, id)
+	// models.PrintGames(client)
 }

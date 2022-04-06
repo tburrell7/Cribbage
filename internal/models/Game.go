@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	//"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -14,8 +15,8 @@ const scoreToWin = 121
 type Game struct {
     Left Player
 	Right Player
-	LeftScore int
-	RightScore int
+	LeftScore int `bson:"leftscore"`
+	RightScore int `bson:"rightscore"`
 }
 
 func (game Game) isBeingPlayed() bool {
@@ -29,7 +30,6 @@ func NewGame(client *mongo.Client, left Player, right Player) interface{} {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
 	return insertResult.InsertedID
 }
 
@@ -43,10 +43,16 @@ func RemoveGame(client *mongo.Client, id interface{}) {
 	fmt.Println("Deleted", deleteRes.DeletedCount, "games with ID =", id)
 }
 
-// func (game *Game) UpdateScore(client mongo.Client, id ObjectId, leftScore int, rightScore int) {
-// 	game.LeftScore = leftScore
-// 	game.RightScore = rightScore
-// }
+func UpdateScore(client *mongo.Client, id interface{}, leftScore int, rightScore int) interface{} {
+	collection := client.Database("Cribbage").Collection("games")
+	filter := bson.D{{"_id", id}}
+	update := bson.D{{"$set", bson.D{{"leftscore", leftScore},{"rightscore", rightScore}}}}
+	updateRes, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return updateRes.UpsertedID
+}
 
 func PrintGames(client *mongo.Client) {
 	collection := client.Database("Cribbage").Collection("games")
@@ -57,6 +63,9 @@ func PrintGames(client *mongo.Client) {
 	var results []bson.M
 	if err = cursor.All(context.TODO(), &results); err != nil {
 		log.Fatal(err)
+	}
+	if len(results) == 0 {
+		fmt.Println("No Games Exist")
 	}
 	for _, result := range results {
 		fmt.Println(result)
