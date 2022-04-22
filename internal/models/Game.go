@@ -1,12 +1,15 @@
 package models
 
+import "go.mongodb.org/mongo-driver/bson/primitive"
+
 const scoreToWin = 121
 
 type Game struct {
-	Left 		Player
-	Right 		Player
-	LeftScore 	int 	`bson:"leftscore"`
-	RightScore	int 	`bson:"rightscore"`
+	ID			primitive.ObjectID	`bson:"_id"`
+	Left 		Player				`bson:"left"`
+	Right 		Player				`bson:"right"`
+	LeftScore 	int 				`bson:"leftscore"`
+	RightScore	int 				`bson:"rightscore"`
 }
 
 func (game Game) isBeingPlayed() bool {

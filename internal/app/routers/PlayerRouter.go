@@ -14,11 +14,6 @@ func PlayerRouter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if r.Method != "GET" {
-		http.Error(w, "Method is not supported.", http.StatusNotFound)
-		return
-	}
-
 	if r.Method == "GET" {
 		w.Header().Set("Content-Type", "application/json")
 		players := service.GetPlayers()
@@ -31,6 +26,30 @@ func PlayerRouter(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		w.Write(resp)
+		return
+	}
+
+	if r.Method == "PUT" {
+		http.Error(w, "Method is not supported.", http.StatusNotFound)
+		return
+	}
+
+	if r.Method == "POST" {
+		w.Header().Set("Content-Type", "application/json")
+		player, err := service.AddPlayer(r.Body)
+		if err != nil {
+			log.Fatal(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		w.WriteHeader(http.StatusCreated)
+		resp, _ := json.Marshal(player)
+		w.Write(resp)
+		return
+	}
+
+	if r.Method == "DELETE" {
+		http.Error(w, "Method is not supported.", http.StatusNotFound)
 		return
 	}
 }
