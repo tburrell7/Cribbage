@@ -42,6 +42,17 @@ func PrintGames() string {
 	return s
 }
 
-func GetPlayers() []models.BPlayer{
+func GetPlayers() []models.Player{
 	return models.GetPlayers()
+}
+
+func RemovePlayer(body io.ReadCloser) {
+	b, err := io.ReadAll(body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var p models.Player
+	json.Unmarshal(b, &p)
+	models.RemovePlayer(p.Id)
+	return
 }
