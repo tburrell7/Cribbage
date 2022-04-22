@@ -3,21 +3,20 @@ package app
 import (
 	"fmt"
 	"gotest/internal/app/routers"
-	//"gotest/internal/models"
 	"log"
 	"net/http"
-
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func Run(client *mongo.Client) {
+func Run() {
 	http.HandleFunc("/games", routers.GameRouter)
 	http.HandleFunc("/players", routers.PlayerRouter)
-
+	
 	fmt.Printf("Starting server at port 3000\n")
     if err := http.ListenAndServe(":3000", nil); err != nil {
         log.Fatal(err)
     }
+	
+	
 
 	// fmt.Println("Let's Play!")
 	// leftTest := models.NewPlayer("Thomas")

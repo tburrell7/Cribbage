@@ -13,3 +13,10 @@ Box to update Game score
 
 brew services start mongodb-community
 brew services stop mongodb-community
+
+
+Need DAL Layer (Driver Interface for queries) //get one x, get many x, get all x, put, post, delete
+Business logic layer where we call functions
+Routers parse api calls
+
+Get games from page
