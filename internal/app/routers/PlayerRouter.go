@@ -27,14 +27,10 @@ func PlayerRouter(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(resp)
 		return
-	}
-
-	if r.Method == "PUT" {
+	} else if r.Method == "PUT" {
 		http.Error(w, "Method is not supported.", http.StatusNotFound)
 		return
-	}
-
-	if r.Method == "POST" {
+	} else if r.Method == "POST" {
 		w.Header().Set("Content-Type", "application/json")
 		player, err := service.AddPlayer(r.Body)
 		if err != nil {
@@ -46,9 +42,7 @@ func PlayerRouter(w http.ResponseWriter, r *http.Request) {
 		resp, _ := json.Marshal(player)
 		w.Write(resp)
 		return
-	}
-
-	if r.Method == "DELETE" {
+	} else if r.Method == "DELETE" {
 		w.Header().Set("Content-Type", "application/json")
 		service.RemovePlayer(r.Body)
 		return

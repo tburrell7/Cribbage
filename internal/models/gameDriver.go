@@ -8,6 +8,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+func GetGames() []Game {
+	gameCollection := client.Database("Cribbage").Collection("games")
+	cursor, err := gameCollection.Find(context.TODO(), bson.D{{}})
+	if err != nil {
+		log.Fatal(err)
+	}
+	var games []Game
+	err = cursor.All(context.TODO(), &games)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return games
+}
+
 func NewGame(left Player, right Player) interface{} {
 	collection := client.Database("Cribbage").Collection("games")
 	game := Game{Left: left, Right: right, LeftScore: 0, RightScore: 0}
@@ -38,8 +52,6 @@ func RemoveGames() {
 	fmt.Println("Deleted", deleteRes.DeletedCount, "games")
 }
 
-
-
 func UpdateScore(id interface{}, leftScore int, rightScore int) interface{} {
 	collection := client.Database("Cribbage").Collection("games")
 	filter := bson.D{{Key: "_id", Value: id}}
@@ -49,19 +61,6 @@ func UpdateScore(id interface{}, leftScore int, rightScore int) interface{} {
 		log.Fatal(err)
 	}
 	return updateRes.UpsertedID
-}
-
-func GetGames() []Game {
-	gameCollection := client.Database("Cribbage").Collection("games")
-	cursor, err := gameCollection.Find(context.TODO(), bson.D{{}})
-	if err != nil {
-		log.Fatal(err)
-	}
-	var games []Game
-	if err = cursor.All(context.TODO(), &games); err != nil {
-		log.Fatal(err)
-	}
-	return games
 }
 
 func PrintStats(game Game) {
