@@ -6,3 +6,10 @@ games should be up to date in database at all times. games should read/write fro
 
 brew services start mongodb-community
 brew services stop mongodb-community
+
+
+games
+error
+unit test
+docker
+?

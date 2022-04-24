@@ -30,10 +30,19 @@ func GameRouter(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write(resp)
 		return
-	} else if r.Method == "PUT" {
-		http.Error(w, "Method is not supported.", http.StatusNotFound)
-		return
 	} else if r.Method == "POST" {
+		w.Header().Set("Content-Type", "application/json")
+		game, err := service.AddGame(r.Body)
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		w.WriteHeader(http.StatusCreated)
+		resp, _ := json.Marshal(game)
+		w.Write(resp)
+		return
+	} else if r.Method == "PUT" {
 		http.Error(w, "Method is not supported.", http.StatusNotFound)
 		return
 	} else if r.Method == "DELETE" {

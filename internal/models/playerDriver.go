@@ -18,23 +18,21 @@ func GetPlayers() []Player {
 	cursor.All(context.TODO(), &results)
 	return results
 }
-
-func FindPlayers(filter bson.D) []Player {
+//Player should be unique in name
+func FindPlayers(filter bson.D) (Player, error) {
 	playerCollection := client.Database("Cribbage").Collection("players")
-	cursor, err := playerCollection.Find(context.TODO(), filter)
-	if err != nil {
-		log.Fatal(err)
-	}
-	var results []Player
-	cursor.All(context.TODO(), &results)
-	return results
+	result:= playerCollection.FindOne(context.TODO(), filter)
+	
+	var p Player
+	err := result.Decode(&p)
+	return p, err
 }
 
-func AddPlayer(name string) error {
+func AddPlayer(name string) (Player, error) {
 	playerCollection := client.Database("Cribbage").Collection("players")
 	player := Player{Name: name}
 	_, err := playerCollection.InsertOne(context.TODO(), player)
-	return err
+	return player, err
 }
 
 func RemovePlayer(id primitive.ObjectID) {

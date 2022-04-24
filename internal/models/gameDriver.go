@@ -22,14 +22,11 @@ func GetGames() []Game {
 	return games
 }
 
-func NewGame(left Player, right Player) interface{} {
-	collection := client.Database("Cribbage").Collection("games")
+func AddGame(left Player, right Player) (Game, error) {
+	gameCollection := client.Database("Cribbage").Collection("games")
 	game := Game{Left: left, Right: right, LeftScore: 0, RightScore: 0}
-	insertResult, err := collection.InsertOne(context.TODO(), game)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return insertResult.InsertedID
+	_, err := gameCollection.InsertOne(context.TODO(), game)
+	return game, err
 }
 
 func RemoveGame(id interface{}) {
