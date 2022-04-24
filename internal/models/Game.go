@@ -8,10 +8,9 @@ type Game struct {
 	Id			primitive.ObjectID	`bson:"_id,omitempty"`
 	Left 		Player				`bson:"left"`
 	Right 		Player				`bson:"right"`
-	LeftScore 	int 				`bson:"leftscore"`
-	RightScore	int 				`bson:"rightscore"`
+	Score		Score
 }
 
 func (game Game) isBeingPlayed() bool {
-	return game.LeftScore < scoreToWin && game.RightScore < scoreToWin
+	return game.Score.Left < scoreToWin && game.Score.Right < scoreToWin
 }
