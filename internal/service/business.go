@@ -30,9 +30,9 @@ func AddGame(body io.ReadCloser) (models.Game, error) {
 	} else {
 		err = e
 	}
-		
-	if b, e := playerExists(pL.Name); b {
-		pL, e = getPlayerByName(g.Left.Name)
+
+	if b, e := playerExists(pR.Name); b {
+		pR, e = getPlayerByName(g.Right.Name)
 		err = e
 	} else {
 		err = e
@@ -43,7 +43,18 @@ func AddGame(body io.ReadCloser) (models.Game, error) {
 	return g, err
 }
 
-func GetPlayers() []models.Player{
+func RemoveGame(body io.ReadCloser) models.Game {
+	b, err := io.ReadAll(body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var g models.Game
+	json.Unmarshal(b, &g)
+	models.RemoveGame(g.Id)
+	return g
+}
+
+func GetPlayers() []models.Player {
 	return models.GetPlayers()
 }
 
@@ -65,7 +76,7 @@ func AddPlayer(body io.ReadCloser) (models.Player, error) {
 	return p, err
 }
 
-func RemovePlayer(body io.ReadCloser) {
+func RemovePlayer(body io.ReadCloser) models.Player {
 	b, err := io.ReadAll(body)
 	if err != nil {
 		log.Fatal(err)
@@ -73,7 +84,7 @@ func RemovePlayer(body io.ReadCloser) {
 	var p models.Player
 	json.Unmarshal(b, &p)
 	models.RemovePlayer(p.Id)
-	return
+	return p
 }
 
 func playerExists(name string) (bool, error) {

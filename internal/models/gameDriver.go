@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GetGames() []Game {
@@ -29,24 +30,13 @@ func AddGame(left Player, right Player) (Game, error) {
 	return game, err
 }
 
-func RemoveGame(id interface{}) {
-	collection := client.Database("Cribbage").Collection("games")
+func RemoveGame(id primitive.ObjectID) {
+	gameCollection := client.Database("Cribbage").Collection("games")
 	filter := bson.D{{Key: "_id", Value: id}}
-	deleteRes, err := collection.DeleteOne(context.TODO(), filter)
+	_, err := gameCollection.DeleteOne(context.TODO(), filter)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
 	}
-	fmt.Println("Deleted", deleteRes.DeletedCount, "games with ID =", id)
-}
-
-func RemoveGames() {
-	collection := client.Database("Cribbage").Collection("games")
-	filter := bson.D{{}}
-	deleteRes, err := collection.DeleteMany(context.TODO(), filter)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("Deleted", deleteRes.DeletedCount, "games")
 }
 
 func UpdateScore(id interface{}, leftScore int, rightScore int) interface{} {

@@ -13,3 +13,23 @@ error
 unit test
 docker
 ?
+
+
+Add Player
+POST /players
+
+{
+    "name": "Jade"
+}
+
+Remove Player
+{
+    "id": "62656593cbd44b5453bc1a3a"
+}
+
+Add Game
+POST /games
+{
+    "left": {"name" : "Josh"},
+    "right": {"name" : "Jade"}
+}

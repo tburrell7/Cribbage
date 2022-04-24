@@ -46,6 +46,12 @@ func GameRouter(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Method is not supported.", http.StatusNotFound)
 		return
 	} else if r.Method == "DELETE" {
+		w.Header().Set("Content-Type", "application/json")
+		game := service.RemoveGame(r.Body)
+		resp, _ := json.Marshal(game)
+		w.Write(resp)
+		return
+	} else {
 		http.Error(w, "Method is not supported.", http.StatusNotFound)
 		return
 	}

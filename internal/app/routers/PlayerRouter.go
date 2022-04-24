@@ -44,7 +44,12 @@ func PlayerRouter(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if r.Method == "DELETE" {
 		w.Header().Set("Content-Type", "application/json")
-		service.RemovePlayer(r.Body)
+		player := service.RemovePlayer(r.Body)
+		resp, _ := json.Marshal(player)
+		w.Write(resp)
+		return
+	} else {
+		http.Error(w, "Method is not supported.", http.StatusNotFound)
 		return
 	}
 }
