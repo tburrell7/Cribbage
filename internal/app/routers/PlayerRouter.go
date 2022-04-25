@@ -1,55 +1,42 @@
 package routers
 
 import (
-	"encoding/json"
 	"fmt"
 	"gotest/internal/service"
-	"log"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
-func PlayerRouter(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/players" {
-		http.Error(w, "404 not found.", http.StatusNotFound)
-		return
+func APIGetPlayers(c echo.Context) error {
+	c.Response().Header().Set("Content-Type", "JSON")
+	players := service.GetPlayers()
+	if len(players) == 0 {
+		return c.String(http.StatusOK, "No Players Found")
 	}
+	if err := c.Bind(players); err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, players)
+}
 
-	if r.Method == "GET" {
-		w.Header().Set("Content-Type", "application/json")
-		players := service.GetPlayers()
-		if len(players) == 0 {
-			w.WriteHeader(http.StatusNoContent)
-			fmt.Fprint(w, "No Players Avaliable")
-		}
-		resp, err := json.Marshal(players)
-		if err != nil {
-			log.Fatal(err)
-		}
-		w.Write(resp)
-		return
-	} else if r.Method == "POST" {
-		w.Header().Set("Content-Type", "application/json")
-		player, err := service.AddPlayer(r.Body)
-		if err != nil {
-			log.Fatal(err)
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		w.WriteHeader(http.StatusCreated)
-		resp, _ := json.Marshal(player)
-		w.Write(resp)
-		return
-	} else if r.Method == "PUT" {
-		http.Error(w, "Method is not supported.", http.StatusNotFound)
-		return
-	} else if r.Method == "DELETE" {
-		w.Header().Set("Content-Type", "application/json")
-		player := service.RemovePlayer(r.Body)
-		resp, _ := json.Marshal(player)
-		w.Write(resp)
-		return
-	} else {
-		http.Error(w, "Method is not supported.", http.StatusNotFound)
-		return
+func APIAddPlayer(c echo.Context) error {
+	c.Response().Header().Set("Content-Type", "JSON")
+	player, err := service.AddPlayer(c.Request().Body)
+	if err != nil {
+		fmt.Println(err)
 	}
+	if err = c.Bind(player); err != nil {
+		return err
+	}
+	return c.JSON(http.StatusCreated, player)
+}
+
+func APIRemovePlayer(c echo.Context) error {
+	c.Response().Header().Set("Content-Type", "JSON")
+	player := service.RemovePlayer(c.Request().Body)
+	if err := c.Bind(player); err != nil {
+		return err
+	}
+	return c.JSON(http.StatusCreated, player)
 }

@@ -1,18 +1,20 @@
 package app
 
 import (
-	"fmt"
 	"gotest/internal/app/routers"
-	"log"
-	"net/http"
+	//"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 func Run() {
-	http.HandleFunc("/games", routers.GameRouter)
-	http.HandleFunc("/players", routers.PlayerRouter)
-	
-	fmt.Printf("Starting server at port 3000\n")
-    if err := http.ListenAndServe(":3000", nil); err != nil {
-        log.Fatal(err)
-    }
+	e := echo.New()
+	e.GET("/games", routers.APIGetGames)
+	e.POST("/games", routers.APIAddGame)
+	e.DELETE("/games", routers.APIRemoveGame)
+	e.GET("/players", routers.APIGetPlayers)
+	e.POST("/players", routers.APIAddPlayer)
+	e.DELETE("/players", routers.APIRemovePlayer)
+
+	e.Logger.Fatal(e.Start(":3000"))
 }
