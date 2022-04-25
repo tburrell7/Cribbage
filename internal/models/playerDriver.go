@@ -28,6 +28,14 @@ func FindPlayers(filter bson.D) (Player, error) {
 	return p, err
 }
 
+func FindPlayerById(id primitive.ObjectID) (Player, error) {
+	var p Player
+	playerCollection := client.Database("Cribbage").Collection("players")
+	filter := bson.D{{Key : "_id", Value : id}}
+	err := playerCollection.FindOne(context.TODO(), filter).Decode(&p)
+	return p, err
+}
+
 func AddPlayer(name string) (Player, error) {
 	playerCollection := client.Database("Cribbage").Collection("players")
 	player := Player{Name: name}

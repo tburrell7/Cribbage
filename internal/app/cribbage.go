@@ -15,6 +15,7 @@ func Run() {
 	e.GET("/players", routers.APIGetPlayers)
 	e.POST("/players", routers.APIAddPlayer)
 	e.DELETE("/players", routers.APIRemovePlayer)
+	e.GET("/players/:id", routers.APIGetPlayer)
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

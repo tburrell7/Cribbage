@@ -2,12 +2,12 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"gotest/internal/models"
 	"io"
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GetGames() []models.Game {
@@ -87,12 +87,15 @@ func RemovePlayer(body io.ReadCloser) models.Player {
 	return p
 }
 
+func GetPlayer(id primitive.ObjectID) (models.Player, error) {
+	return models.FindPlayerById(id)
+}
+
 func playerExists(name string) (bool, error) {
 	b := true
 	_, err := models.FindPlayers(bson.D{{Key: "name", Value: name}})
 	if err != nil {
 		b = false
 	}
-	fmt.Println(name, "is a player")
 	return b, err
 }
