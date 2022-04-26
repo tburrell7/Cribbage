@@ -35,9 +35,31 @@ func APIAddGame(c echo.Context) error {
 
 func APIRemoveGame(c echo.Context) error {
 	c.Response().Header().Set("Content-Type", "JSON")
-	game := service.RemoveGame(c.Request().Body)
+	game, err := service.RemoveGame(c.Param("id"))
+	if err != nil {
+		fmt.Println(err)
+	}
 	if err := c.Bind(game); err != nil {
 		return err
 	}
 	return c.JSON(http.StatusCreated, game)
+}
+
+func APIGetGame(c echo.Context) error {
+	c.Response().Header().Set("Content-Type", "JSON")
+	game, err := service.GetGame(c.Param("id"))
+	if err != nil {
+		return c.String(http.StatusNotFound, err.Error())
+	}
+	return c.JSON(http.StatusOK, game)
+}
+
+func APIUpdateScore(c echo.Context) error {
+	c.Response().Header().Set("Content-Type", "JSON")
+	//game, err := service.UpdateScore(c.Param("id"), c.Request().Body)
+	err := service.UpdateScore(c.Param("id"), c.Request().Body)
+	if err != nil {
+		return c.String(http.StatusNotFound, err.Error())
+	}
+	return c.String(http.StatusOK, "Game Score updated")
 }

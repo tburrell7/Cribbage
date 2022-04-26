@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	//"fmt"
 	"gotest/internal/models"
 	"io"
 	"log"
@@ -43,15 +44,36 @@ func AddGame(body io.ReadCloser) (models.Game, error) {
 	return g, err
 }
 
-func RemoveGame(body io.ReadCloser) models.Game {
+func RemoveGame(id string) (models.Game, error) {
+	i, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	models.RemoveGame(i)
+	return models.GetGameById(i)
+}
+
+func GetGame(id string) (models.Game, error) {
+	i, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return models.GetGameById(i)
+}
+
+func UpdateScore(id string, body io.ReadCloser) error {
 	b, err := io.ReadAll(body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	var g models.Game
-	json.Unmarshal(b, &g)
-	models.RemoveGame(g.Id)
-	return g
+	var s models.Score
+	json.Unmarshal(b, &s)
+	i, err := primitive.ObjectIDFromHex(id)
+	err = models.UpdateScore(i, s)
+	//g, err := models.GetGameById(i)
+	//fmt.Println(g.Id, g.Score.LeftScore)
+	//return g, err
+	return err
 }
 
 func GetPlayers() []models.Player {
@@ -87,7 +109,8 @@ func RemovePlayer(body io.ReadCloser) models.Player {
 	return p
 }
 
-func GetPlayer(id primitive.ObjectID) (models.Player, error) {
+func GetPlayer(i string) (models.Player, error) {
+	id, _ := primitive.ObjectIDFromHex(i)
 	return models.FindPlayerById(id)
 }
 

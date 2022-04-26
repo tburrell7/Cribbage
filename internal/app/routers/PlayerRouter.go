@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func APIGetPlayers(c echo.Context) error {
@@ -44,11 +43,7 @@ func APIRemovePlayer(c echo.Context) error {
 
 func APIGetPlayer(c echo.Context) error {
 	c.Response().Header().Set("Content-Type", "JSON")
-	id, err := primitive.ObjectIDFromHex(c.Param("id"))
-	if err != nil {
-		return c.String(http.StatusNotFound, err.Error())
-	}
-	player, err := service.GetPlayer(id)
+	player, err := service.GetPlayer(c.Param("id"))
 	if err != nil {
 		return c.String(http.StatusNotFound, err.Error())
 	}

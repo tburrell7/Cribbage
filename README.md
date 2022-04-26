@@ -14,6 +14,8 @@ unit test
 docker
 go await
 
+delete things one at a time not all at once
+
 
 Add Player
 POST /players
@@ -32,4 +34,10 @@ POST /games
 {
     "left": {"name" : "Josh"},
     "right": {"name" : "Jade"}
+}
+
+PATCH Score
+{
+    "leftscore": 50,
+    "rightscore": 30
 }
