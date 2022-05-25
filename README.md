@@ -21,7 +21,7 @@ Add Player
 POST /players
 
 {
-    "name": "Jade"
+    "name": "Carl"
 }
 
 Remove Player
@@ -32,8 +32,8 @@ Remove Player
 Add Game
 POST /games
 {
-    "left": {"name" : "Josh"},
-    "right": {"name" : "Jade"}
+    "left": {"name" : "Carl"},
+    "right": {"name" : "Amanda"}
 }
 
 PATCH Score
